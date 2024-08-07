@@ -1,17 +1,16 @@
 pipeline {
     agent any
     environment {
-        GIT_REPO_URL = 'https://github.com/npestov9/IT-6.1C'
+        GIT_REPO_URL = 'https://github.com/yourusername/your-repo.git' // Change to your repository URL
         STAGING_ENVIRONMENT = 'staging-server'
         PRODUCTION_ENVIRONMENT = 'production-server'
-        RECIPIENT_EMAIL = 'npestov9@gmail.com.com' // Change to your email
+        RECIPIENT_EMAIL = 'npestov9@gmail.com' // Change to your email
     }
     stages {
         stage('Build') {
             steps {
                 script {
                     echo "Building the code using Maven"
-                    // Example: sh 'mvn clean install'
                 }
             }
         }
@@ -20,7 +19,6 @@ pipeline {
                 script {
                     echo "Running unit tests using JUnit"
                     echo "Running integration tests using Selenium"
-                    // Example: sh 'mvn test'
                 }
             }
         }
@@ -28,7 +26,6 @@ pipeline {
             steps {
                 script {
                     echo "Analyzing code quality using SonarQube"
-                    // Example: sh 'sonar-scanner'
                 }
             }
         }
@@ -36,7 +33,6 @@ pipeline {
             steps {
                 script {
                     echo "Performing security scan using OWASP ZAP"
-                    // Example: sh 'zap-baseline.py -t http://example.com'
                 }
             }
             post {
@@ -52,7 +48,6 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to staging server: ${env.STAGING_ENVIRONMENT}"
-                    // Example: sh 'deploy-script.sh staging'
                 }
             }
         }
@@ -60,7 +55,6 @@ pipeline {
             steps {
                 script {
                     echo "Running integration tests on staging environment"
-                    // Example: sh 'mvn verify -Pstaging'
                 }
             }
             post {
@@ -76,7 +70,6 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to production server: ${env.PRODUCTION_ENVIRONMENT}"
-                    // Example: sh 'deploy-script.sh production'
                 }
             }
         }
