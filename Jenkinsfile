@@ -4,7 +4,7 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/npestov9/IT-6.1C'
         STAGING_ENVIRONMENT = 'staging-server'
         PRODUCTION_ENVIRONMENT = 'production-server'
-        RECIPIENT_EMAIL = 'npestov9@gmail.com' //
+        RECIPIENT_EMAIL = 'npestov9@gmail.com' //comment
     }
     stages {
         stage('Build') {
