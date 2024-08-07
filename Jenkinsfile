@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        GIT_REPO_URL = 'https://github.com/npestov9/IT-6.1C' 
+        GIT_REPO_URL = 'https://github.com/npestov9/IT-6.1C'
         STAGING_ENVIRONMENT = 'staging-server'
         PRODUCTION_ENVIRONMENT = 'production-server'
-        RECIPIENT_EMAIL = 'npestov9@gmail.com'  //mothing
+        RECIPIENT_EMAIL = 'instagramw7@gmail.com' //change
     }
     stages {
         stage('Build') {
