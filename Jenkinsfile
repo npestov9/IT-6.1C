@@ -16,9 +16,9 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the log
-                        sh 'cat ${WORKSPACE}/log > build.log'
-                        // Send the email with the log attached
+                        // Capture Jenkins console log and write it to a file
+                        archiveArtifacts artifacts: '**/build.log', allowEmptyArchive: true
+                        // Send the email with the Jenkins log attached
                         mail bcc: '',
                              body: "Build stage completed. Status: ${currentBuild.currentResult}",
                              cc: '',
@@ -26,7 +26,7 @@ pipeline {
                              replyTo: '',
                              subject: "Build Stage Status",
                              to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: 'build.log'
+                             attachmentsPattern: '**/build.log'
                     }
                 }
             }
@@ -41,9 +41,9 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the log
-                        sh 'cat ${WORKSPACE}/log > unit_and_integration_tests.log'
-                        // Send the email with the log attached
+                        // Capture Jenkins console log and write it to a file
+                        archiveArtifacts artifacts: '**/unit_and_integration_tests.log', allowEmptyArchive: true
+                        // Send the email with the Jenkins log attached
                         mail bcc: '',
                              body: "Unit and integration tests completed. Status: ${currentBuild.currentResult}",
                              cc: '',
@@ -51,7 +51,7 @@ pipeline {
                              replyTo: '',
                              subject: "Unit and Integration Tests Status",
                              to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: 'unit_and_integration_tests.log'
+                             attachmentsPattern: '**/unit_and_integration_tests.log'
                     }
                 }
             }
