@@ -4,7 +4,7 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/npestov9/IT-6.1C'
         STAGING_ENVIRONMENT = 'staging-server'
         PRODUCTION_ENVIRONMENT = 'production-server'
-        RECIPIENT_EMAIL = 'npestov9@gmail.com' //comment
+        RECIPIENT_EMAIL = 'npestov9@gmail.com'
     }
     stages {
         stage('Build') {
@@ -16,17 +16,13 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture Jenkins console log and write it to a file
-                        archiveArtifacts artifacts: '**/build.log', allowEmptyArchive: true
-                        // Send the email with the Jenkins log attached
-                        mail bcc: '',
-                             body: "Build stage completed. Status: ${currentBuild.currentResult}",
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Build Stage Status",
-                             to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: '**/build.log'
+                        // Send an email with the console log attached
+                        emailext subject: "Build Stage Status: ${currentBuild.currentResult}",
+                                 body: """Build stage completed. Status: ${currentBuild.currentResult}
+                                 You can view the full build log at: ${env.BUILD_URL}console
+                                 """,
+                                 to: "${env.RECIPIENT_EMAIL}",
+                                 attachLog: true
                     }
                 }
             }
@@ -41,17 +37,13 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture Jenkins console log and write it to a file
-                        archiveArtifacts artifacts: '**/unit_and_integration_tests.log', allowEmptyArchive: true
-                        // Send the email with the Jenkins log attached
-                        mail bcc: '',
-                             body: "Unit and integration tests completed. Status: ${currentBuild.currentResult}",
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Unit and Integration Tests Status",
-                             to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: '**/unit_and_integration_tests.log'
+                        // Send an email with the console log attached
+                        emailext subject: "Unit and Integration Tests Status: ${currentBuild.currentResult}",
+                                 body: """Unit and Integration Tests completed. Status: ${currentBuild.currentResult}
+                                 You can view the full test log at: ${env.BUILD_URL}console
+                                 """,
+                                 to: "${env.RECIPIENT_EMAIL}",
+                                 attachLog: true
                     }
                 }
             }
@@ -65,17 +57,13 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the log
-                        sh 'cat ${WORKSPACE}/log > code_analysis.log'
-                        // Send the email with the log attached
-                        mail bcc: '',
-                             body: "Code analysis completed. Status: ${currentBuild.currentResult}",
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Code Analysis Status",
-                             to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: 'code_analysis.log'
+                        // Send an email with the console log attached
+                        emailext subject: "Code Analysis Status: ${currentBuild.currentResult}",
+                                 body: """Code analysis completed. Status: ${currentBuild.currentResult}
+                                 You can view the full code analysis log at: ${env.BUILD_URL}console
+                                 """,
+                                 to: "${env.RECIPIENT_EMAIL}",
+                                 attachLog: true
                     }
                 }
             }
@@ -89,17 +77,13 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the log
-                        sh 'cat ${WORKSPACE}/log > security_scan.log'
-                        // Send the email with the log attached
-                        mail bcc: '',
-                             body: "Security scan completed. Status: ${currentBuild.currentResult}",
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Security Scan Status",
-                             to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: 'security_scan.log'
+                        // Send an email with the console log attached
+                        emailext subject: "Security Scan Status: ${currentBuild.currentResult}",
+                                 body: """Security scan completed. Status: ${currentBuild.currentResult}
+                                 You can view the full security scan log at: ${env.BUILD_URL}console
+                                 """,
+                                 to: "${env.RECIPIENT_EMAIL}",
+                                 attachLog: true
                     }
                 }
             }
@@ -113,17 +97,13 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the log
-                        sh 'cat ${WORKSPACE}/log > deploy_to_staging.log'
-                        // Send the email with the log attached
-                        mail bcc: '',
-                             body: "Deployment to staging completed. Status: ${currentBuild.currentResult}",
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Deploy to Staging Status",
-                             to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: 'deploy_to_staging.log'
+                        // Send an email with the console log attached
+                        emailext subject: "Deploy to Staging Status: ${currentBuild.currentResult}",
+                                 body: """Deployment to staging completed. Status: ${currentBuild.currentResult}
+                                 You can view the full deployment log at: ${env.BUILD_URL}console
+                                 """,
+                                 to: "${env.RECIPIENT_EMAIL}",
+                                 attachLog: true
                     }
                 }
             }
@@ -137,17 +117,13 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the log
-                        sh 'cat ${WORKSPACE}/log > integration_tests_on_staging.log'
-                        // Send the email with the log attached
-                        mail bcc: '',
-                             body: "Integration tests on staging completed. Status: ${currentBuild.currentResult}",
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Integration Tests on Staging Status",
-                             to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: 'integration_tests_on_staging.log'
+                        // Send an email with the console log attached
+                        emailext subject: "Integration Tests on Staging Status: ${currentBuild.currentResult}",
+                                 body: """Integration tests on staging completed. Status: ${currentBuild.currentResult}
+                                 You can view the full integration test log at: ${env.BUILD_URL}console
+                                 """,
+                                 to: "${env.RECIPIENT_EMAIL}",
+                                 attachLog: true
                     }
                 }
             }
@@ -161,20 +137,16 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the log
-                        sh 'cat ${WORKSPACE}/log > deploy_to_production.log'
-                        // Send the email with the log attached
-                        mail bcc: '',
-                             body: "Deployment to production completed. Status: ${currentBuild.currentResult}",
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Deploy to Production Status",
-                             to: "${env.RECIPIENT_EMAIL}",
-                             attachmentsPattern: 'deploy_to_production.log'
+                        // Send an email with the console log attached
+                        emailext subject: "Deploy to Production Status: ${currentBuild.currentResult}",
+                                 body: """Deployment to production completed. Status: ${currentBuild.currentResult}
+                                 You can view the full production deployment log at: ${env.BUILD_URL}console
+                                 """,
+                                 to: "${env.RECIPIENT_EMAIL}",
+                                 attachLog: true
                     }
                 }
             }
         }
-    }//not up to date
+    }
 }
