@@ -13,38 +13,12 @@ pipeline {
                     echo "Building the code using Maven"
                 }
             }
-            post {
-                always {
-                    script {
-                        // Send an email with the console log attached
-                        emailext subject: "Build Stage Status: ${currentBuild.currentResult}",
-                                 body: """Build stage completed. Status: ${currentBuild.currentResult}
-                                 You can view the full build log at: ${env.BUILD_URL}console
-                                 """,
-                                 to: "${env.RECIPIENT_EMAIL}",
-                                 attachLog: true
-                    }
-                }
-            }
         }
         stage('Unit and Integration Tests') {
             steps {
                 script {
                     echo "Running unit tests using JUnit"
                     echo "Running integration tests using Selenium"
-                }
-            }
-            post {
-                always {
-                    script {
-                        // Send an email with the console log attached
-                        emailext subject: "Unit and Integration Tests Status: ${currentBuild.currentResult}",
-                                 body: """Unit and Integration Tests completed. Status: ${currentBuild.currentResult}
-                                 You can view the full test log at: ${env.BUILD_URL}console
-                                 """,
-                                 to: "${env.RECIPIENT_EMAIL}",
-                                 attachLog: true
-                    }
                 }
             }
         }
@@ -54,37 +28,11 @@ pipeline {
                     echo "Analyzing code quality using SonarQube"
                 }
             }
-            post {
-                always {
-                    script {
-                        // Send an email with the console log attached
-                        emailext subject: "Code Analysis Status: ${currentBuild.currentResult}",
-                                 body: """Code analysis completed. Status: ${currentBuild.currentResult}
-                                 You can view the full code analysis log at: ${env.BUILD_URL}console
-                                 """,
-                                 to: "${env.RECIPIENT_EMAIL}",
-                                 attachLog: true
-                    }
-                }
-            }
         }
         stage('Security Scan') {
             steps {
                 script {
                     echo "Performing security scan using OWASP ZAP"
-                }
-            }
-            post {
-                always {
-                    script {
-                        // Send an email with the console log attached
-                        emailext subject: "Security Scan Status: ${currentBuild.currentResult}",
-                                 body: """Security scan completed. Status: ${currentBuild.currentResult}
-                                 You can view the full security scan log at: ${env.BUILD_URL}console
-                                 """,
-                                 to: "${env.RECIPIENT_EMAIL}",
-                                 attachLog: true
-                    }
                 }
             }
         }
@@ -97,13 +45,22 @@ pipeline {
             post {
                 always {
                     script {
-                        // Send an email with the console log attached
-                        emailext subject: "Deploy to Staging Status: ${currentBuild.currentResult}",
-                                 body: """Deployment to staging completed. Status: ${currentBuild.currentResult}
-                                 You can view the full deployment log at: ${env.BUILD_URL}console
-                                 """,
-                                 to: "${env.RECIPIENT_EMAIL}",
-                                 attachLog: true
+                        // Capture the entire Jenkins log
+                        def fullLog = sh(script: "cat ${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log", returnStdout: true).trim()
+                        // Send email after deploying to staging
+                        mail bcc: '',
+                             body: """Deployment to Staging completed. Status: ${currentBuild.currentResult}
+
+                             Full build log:
+
+                             ${fullLog}
+
+                             """,
+                             cc: '',
+                             from: '',
+                             replyTo: '',
+                             subject: "Deploy to Staging Status: ${currentBuild.currentResult}",
+                             to: "${env.RECIPIENT_EMAIL}"
                     }
                 }
             }
@@ -112,19 +69,6 @@ pipeline {
             steps {
                 script {
                     echo "Running integration tests on staging environment"
-                }
-            }
-            post {
-                always {
-                    script {
-                        // Send an email with the console log attached
-                        emailext subject: "Integration Tests on Staging Status: ${currentBuild.currentResult}",
-                                 body: """Integration tests on staging completed. Status: ${currentBuild.currentResult}
-                                 You can view the full integration test log at: ${env.BUILD_URL}console
-                                 """,
-                                 to: "${env.RECIPIENT_EMAIL}",
-                                 attachLog: true
-                    }
                 }
             }
         }
@@ -137,13 +81,22 @@ pipeline {
             post {
                 always {
                     script {
-                        // Send an email with the console log attached
-                        emailext subject: "Deploy to Production Status: ${currentBuild.currentResult}",
-                                 body: """Deployment to production completed. Status: ${currentBuild.currentResult}
-                                 You can view the full production deployment log at: ${env.BUILD_URL}console
-                                 """,
-                                 to: "${env.RECIPIENT_EMAIL}",
-                                 attachLog: true
+                        // Capture the entire Jenkins log
+                        def fullLog = sh(script: "cat ${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log", returnStdout: true).trim()
+                        // Send email after deploying to production
+                        mail bcc: '',
+                             body: """Deployment to Production completed. Status: ${currentBuild.currentResult}
+
+                             Full build log:
+
+                             ${fullLog}
+
+                             """,
+                             cc: '',
+                             from: '',
+                             replyTo: '',
+                             subject: "Deploy to Production Status: ${currentBuild.currentResult}",
+                             to: "${env.RECIPIENT_EMAIL}"
                     }
                 }
             }
