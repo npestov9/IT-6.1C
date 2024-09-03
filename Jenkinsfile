@@ -45,22 +45,36 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the entire Jenkins log
-                        def fullLog = sh(script: "cat ${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log", returnStdout: true).trim()
-                        // Send email after deploying to staging
-                        mail bcc: '',
-                             body: """Deployment to Staging completed. Status: ${currentBuild.currentResult}
+                        // Check if the log file exists before reading it
+                        def logFile = "${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log"
+                        if (fileExists(logFile)) {
+                            def fullLog = sh(script: "cat ${logFile}", returnStdout: true).trim()
+                            mail bcc: '',
+                                 body: """Deployment to Staging completed. Status: ${currentBuild.currentResult}
 
-                             Full build log:
+                                 Full build log:
 
-                             ${fullLog}
+                                 ${fullLog}
 
-                             """,
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Deploy to Staging Status: ${currentBuild.currentResult}",
-                             to: "${env.RECIPIENT_EMAIL}"
+                                 """,
+                                 cc: '',
+                                 from: '',
+                                 replyTo: '',
+                                 subject: "Deploy to Staging Status: ${currentBuild.currentResult}",
+                                 to: "${env.RECIPIENT_EMAIL}"
+                        } else {
+                            mail bcc: '',
+                                 body: """Deployment to Staging completed. Status: ${currentBuild.currentResult}
+
+                                 No log file found.
+
+                                 """,
+                                 cc: '',
+                                 from: '',
+                                 replyTo: '',
+                                 subject: "Deploy to Staging Status: ${currentBuild.currentResult}",
+                                 to: "${env.RECIPIENT_EMAIL}"
+                        }
                     }
                 }
             }
@@ -81,22 +95,36 @@ pipeline {
             post {
                 always {
                     script {
-                        // Capture the entire Jenkins log
-                        def fullLog = sh(script: "cat ${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log", returnStdout: true).trim()
-                        // Send email after deploying to production
-                        mail bcc: '',
-                             body: """Deployment to Production completed. Status: ${currentBuild.currentResult}
+                        // Check if the log file exists before reading it
+                        def logFile = "${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log"
+                        if (fileExists(logFile)) {
+                            def fullLog = sh(script: "cat ${logFile}", returnStdout: true).trim()
+                            mail bcc: '',
+                                 body: """Deployment to Production completed. Status: ${currentBuild.currentResult}
 
-                             Full build log:
+                                 Full build log:
 
-                             ${fullLog}
+                                 ${fullLog}
 
-                             """,
-                             cc: '',
-                             from: '',
-                             replyTo: '',
-                             subject: "Deploy to Production Status: ${currentBuild.currentResult}",
-                             to: "${env.RECIPIENT_EMAIL}"
+                                 """,
+                                 cc: '',
+                                 from: '',
+                                 replyTo: '',
+                                 subject: "Deploy to Production Status: ${currentBuild.currentResult}",
+                                 to: "${env.RECIPIENT_EMAIL}"
+                        } else {
+                            mail bcc: '',
+                                 body: """Deployment to Production completed. Status: ${currentBuild.currentResult}
+
+                                 No log file found.
+
+                                 """,
+                                 cc: '',
+                                 from: '',
+                                 replyTo: '',
+                                 subject: "Deploy to Production Status: ${currentBuild.currentResult}",
+                                 to: "${env.RECIPIENT_EMAIL}"
+                        }
                     }
                 }
             }
