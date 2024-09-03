@@ -16,11 +16,14 @@ pipeline {
             post {
                 always {
                     script {
-                        echo "Workspace path: ${env.WORKSPACE}"
-                        echo "Expected log path: ${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log"
+                        // Adjusted log file path
+                        def logFilePath = "/Users/nikitapestov/.jenkins/jobs/6.1C/builds/${env.BUILD_ID}/log"
+                        
+                        // Print the directory contents to verify
+                        sh "ls -la /Users/nikitapestov/.jenkins/jobs/6.1C/builds/${env.BUILD_ID}/"
 
                         // Attempt to capture the full log
-                        def fullLog = sh(script: "cat ${env.WORKSPACE}/../${env.JOB_NAME}/builds/${env.BUILD_ID}/log || echo 'Log file not found'", returnStdout: true).trim()
+                        def fullLog = sh(script: "cat ${logFilePath}", returnStdout: true).trim()
 
                         mail bcc: '',
                              body: """Deployment to Staging completed. Status: ${currentBuild.currentResult}
