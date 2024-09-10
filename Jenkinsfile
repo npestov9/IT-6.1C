@@ -48,23 +48,23 @@ pipeline {
                         // Path to the log file
                         def logFilePath = "/Users/nikitapestov/.jenkins/jobs/6.1C/builds/${env.BUILD_ID}/log"
                         
-                        // Capture the full Jenkins log
-                        def fullLog = sh(script: "cat ${logFilePath}", returnStdout: true).trim()
+                        // Copy and rename the log file to log.txt
+                        def logFileWithExtension = "/tmp/log.txt"
+                        sh "cp ${logFilePath} ${logFileWithExtension}"
 
-                        // Send email with the full log after deploying to staging
+                        // Send email with the log file as an attachment
                         mail bcc: '',
                              body: """Deployment to Staging completed. Status: ${currentBuild.currentResult}
 
-                             Full build log:
-
-                             ${fullLog}
+                             Please find the build log attached.
 
                              """,
                              cc: '',
                              from: '',
                              replyTo: '',
                              subject: "Deploy to Staging Status: ${currentBuild.currentResult}",
-                             to: "${env.RECIPIENT_EMAIL}"
+                             to: "${env.RECIPIENT_EMAIL}",
+                             attachmentsPattern: logFileWithExtension
                     }
                 }
             }
@@ -88,27 +88,26 @@ pipeline {
                         // Path to the log file
                         def logFilePath = "/Users/nikitapestov/.jenkins/jobs/6.1C/builds/${env.BUILD_ID}/log"
                         
-                        // Capture the full Jenkins log
-                        def fullLog = sh(script: "cat ${logFilePath}", returnStdout: true).trim()
+                        // Copy and rename the log file to log.txt
+                        def logFileWithExtension = "/tmp/log.txt"
+                        sh "cp ${logFilePath} ${logFileWithExtension}"
 
-                        // Send email with the full log after deploying to production
+                        // Send email with the log file as an attachment
                         mail bcc: '',
                              body: """Deployment to Production completed. Status: ${currentBuild.currentResult}
 
-                             Full build log:
-
-                             ${fullLog}
+                             Please find the build log attached.
 
                              """,
                              cc: '',
                              from: '',
                              replyTo: '',
                              subject: "Deploy to Production Status: ${currentBuild.currentResult}",
-                             to: "${env.RECIPIENT_EMAIL}"
+                             to: "${env.RECIPIENT_EMAIL}",
+                             attachmentsPattern: logFileWithExtension
                     }
                 }
             }
         }
     }
 }
-//test
